@@ -40,11 +40,13 @@ class Bullets(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.speed = 10
         self.image = pygame.image.load("assets/bullet.png").convert_alpha()
+        self.resize = pygame.transform.scale(self.image,(5,5))
         self.w = self.image.get_width()
         self.h = self.image.get_height()
-        self.resize = pygame.transform.scale(self.image,(self.w*0.2,self.h*0.2))
         self.rect = self.resize.get_rect()
         self.rect.center = (x,y)
         
     def update(self):
         self.rect.centerx += 10
+        if self.rect.x > 1200:
+            self.kill()

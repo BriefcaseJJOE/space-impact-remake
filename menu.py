@@ -8,7 +8,7 @@ screen = pygame.display.set_mode((1000,600))
 def main_menu():
     pygame.display.set_caption("Main Menu")
     #Title
-    test_font = pygame.font.Font(None,100)
+    test_font = pygame.font.Font("freesansbold.ttf",70)
     text_surface = test_font.render("Space Impact Remake",False,"white")
 
     #Buttons
@@ -71,7 +71,8 @@ def credit():
     pygame.display.set_caption("Credits")
     
     test_font = pygame.font.Font(None,100)
-    text_surface = test_font.render("made by:Irwin lai",False,"white")
+    text_surface = test_font.render("Made by:Irwin lai",False,"white")
+    asset_surface = test_font.render("Assets by:Zai ndn",False,"white")
      
     back_button = pygame.image.load("assets/back.png")
     back_button = pygame.transform.scale(back_button,(100 ,100))
@@ -106,7 +107,8 @@ def credit():
             second_bgx = 0
         screen.blit(bg,(bgx,0))
         screen.blit(second_bg,(second_bgx,0))
-        screen.blit(text_surface,(200,300))
+        screen.blit(text_surface,(200,250))
+        screen.blit(asset_surface,(190,350))
         bbutton.update()
         
         pygame.display.update()
