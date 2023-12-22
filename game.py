@@ -26,9 +26,9 @@ def game():
     all_sprite = pygame.sprite.Group()
     bullet_group = pygame.sprite.Group()
     player = s.Player()
-    
     all_sprite.add(player)
     #controls
+    cooldown = 0
     shoot = False
     
     #bullet = s.Bullets(s.Player.rect.centerx,s.Player.rect.centery)
@@ -37,24 +37,31 @@ def game():
     while run:
         # for every event check that if user click on cross of the screen
         #then quit the game
-
+        clock.tick(60)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.QUIT()
                 exit()
 
-                 
+            #event handler 
+            #KEY DOWN
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     shoot = True
+                    
+            #KEY UP        
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_SPACE:
                     shoot = False
 
             if shoot:
-                bullet = s.Bullets(player.rect.centerx+17,player.rect.centery-15)
-                bullet_group.add(bullet)
-        
+                if cooldown ==0:
+                    bullet_group.add(s.Bullets(player.rect.centerx+17,player.rect.centery-15))
+                    cooldown = 5
+                else:
+                    cooldown -= 1
+                
+       
         #background logic
         bgx += 0.5
         second_bgx +=0.5
@@ -82,7 +89,7 @@ def game():
 
         pygame.display.update()
     
-        clock.tick(60)
+        
 
 
 

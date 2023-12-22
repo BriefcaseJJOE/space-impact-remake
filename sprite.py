@@ -5,6 +5,8 @@ from typing import Any
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
+        self.alive = True
+        self.cooldown = 0
         self.image = pygame.image.load("assets/player1.png")
         self.resize =  pygame.transform.scale(self.image,(100,50))
         self.rect = self.resize.get_rect()
@@ -15,6 +17,7 @@ class Player(pygame.sprite.Sprite):
     
 
     def update(self):
+        self.cooldown -= 1
         self.speedx = 0
         self.speedy = 0
         key_state = pygame.key.get_pressed()
@@ -27,10 +30,13 @@ class Player(pygame.sprite.Sprite):
         if key_state[pygame.K_DOWN]:
             self.speedy = + 4 
         self.rect.x += self.speedx
-        self.rect.y += self.speedy      
+        self.rect.y += self.speedy    
+        if self.cooldown == 0:
+            self.cooldown = 20  
         
-    def create_bullet(self):
-        pass
+
+        
+        
 
         
 
@@ -48,5 +54,5 @@ class Bullets(pygame.sprite.Sprite):
         
     def update(self):
         self.rect.centerx += 10
-        if self.rect.x > 1200:
+        if self.rect.x > 1050:
             self.kill()
