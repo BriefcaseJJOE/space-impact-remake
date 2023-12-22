@@ -108,7 +108,7 @@ def credit():
         screen.blit(bg,(bgx,0))
         screen.blit(second_bg,(second_bgx,0))
         screen.blit(text_surface,(200,250))
-        screen.blit(asset_surface,(190,350))
+        screen.blit(asset_surface,(190,350))  
         bbutton.update()
         
         pygame.display.update()
