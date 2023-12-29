@@ -6,7 +6,6 @@ collide = 0
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.alive = True
         self.lives = 3
         self.image = pygame.image.load("assets/player1.png")
         self.resize =  pygame.transform.scale(self.image,(100,50))
@@ -40,6 +39,11 @@ class Player(pygame.sprite.Sprite):
             self.rect.y = 550
         if self.rect.y < 0:
             self.rect.y = 0
+        #death condition
+        if self.lives == 0:
+            self.kill()
+            
+
         
     def reset(self):
         self.lives -= 1
@@ -70,7 +74,7 @@ class Enemy(pygame.sprite.Sprite):
 class Bullets(pygame.sprite.Sprite):
     def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self)
-        self.speed = 10
+        #self.speed = 10
         self.image = pygame.image.load("assets/bullet.png").convert_alpha()
         self.resize = pygame.transform.scale(self.image,(5,5))
         self.w = self.image.get_width()

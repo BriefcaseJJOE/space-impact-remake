@@ -1,17 +1,20 @@
 import pygame
 import button as b
 import sprite as s
+from config import SCREEN_WIDTH , SCREEN_HEIGHT
+import time
 pygame.init()
-screen = pygame.display.set_mode((1000,600))
+
+screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
 
 
 def main_menu():
     pygame.display.set_caption("Main Menu")
-    #Title
+    # Title
     test_font = pygame.font.Font("freesansbold.ttf",70)
     text_surface = test_font.render("Space Impact Remake",False,"white")
 
-    #Buttons
+    # Buttons
     credit_button = pygame.image.load("assets/chest.png")
     credit_button = pygame.transform.scale(credit_button,(100 ,100))
 
@@ -22,21 +25,21 @@ def main_menu():
     quit_button = pygame.transform.scale(quit_button,(250 ,100))
    
     cbutton = b.Button(credit_button,200,400)
-    pbutton = b.Button(play_button,1000/2 , 400)
-    qbutton = b.Button(quit_button,1000/2 , 520)
+    pbutton = b.Button(play_button,SCREEN_WIDTH/2 , 400)
+    qbutton = b.Button(quit_button,SCREEN_WIDTH/2 , 520)
 
-    #BACKGROUND|
-    bgx = -1000
+    # BACKGROUND|
+    bgx = -SCREEN_WIDTH
     
     second_bgx = 0
 
     bg = pygame.image.load("assets/bgg.jpeg").convert_alpha()
-    bg = pygame.transform.scale(bg,(1000,600))
+    bg = pygame.transform.scale(bg,(SCREEN_WIDTH,SCREEN_HEIGHT))
 
     second_bg = pygame.image.load("assets/bgg.jpeg").convert_alpha()
-    second_bg = pygame.transform.scale(bg,(1000,600))
+    second_bg = pygame.transform.scale(bg,(SCREEN_WIDTH,SCREEN_HEIGHT))
 
-    #MENU LOOP
+    # MENU LOOP
     while True:
 
         for event in pygame.event.get():
@@ -54,8 +57,8 @@ def main_menu():
         second_bgx +=0.1
 
         if bgx > -1:
-            bgx = -1000
-        if second_bgx > 1000:
+            bgx = -SCREEN_WIDTH
+        if second_bgx > SCREEN_WIDTH:
             second_bgx = 0
 
         screen.blit(bg,(bgx,0))
@@ -79,15 +82,15 @@ def credit():
 
     bbutton = b.Button(back_button,70,50)
 
-    bgx = -1000
+    bgx = -SCREEN_WIDTH
     
     second_bgx = 0
 
     bg = pygame.image.load("assets/bgg.jpeg").convert_alpha()
-    bg = pygame.transform.scale(bg,(1000,600))
+    bg = pygame.transform.scale(bg,(SCREEN_WIDTH,SCREEN_HEIGHT))
 
     second_bg = pygame.image.load("assets/bgg.jpeg").convert_alpha()
-    second_bg = pygame.transform.scale(bg,(1000,600))
+    second_bg = pygame.transform.scale(bg,(SCREEN_WIDTH,SCREEN_HEIGHT))
     while True:
 
         for event in pygame.event.get():
@@ -102,8 +105,8 @@ def credit():
         second_bgx +=0.1
 
         if bgx > -1:
-            bgx = -1000
-        if second_bgx > 1000:
+            bgx = -SCREEN_WIDTH
+        if second_bgx > SCREEN_WIDTH:
             second_bgx = 0
         screen.blit(bg,(bgx,0))
         screen.blit(second_bg,(second_bgx,0))
@@ -124,15 +127,15 @@ def gameover():
 
     bbutton = b.Button(back_button,70,50)
 
-    bgx = -1000
+    bgx = -SCREEN_WIDTH
     
     second_bgx = 0
 
     bg = pygame.image.load("assets/bgg.jpeg").convert_alpha()
-    bg = pygame.transform.scale(bg,(1000,600))
+    bg = pygame.transform.scale(bg,(SCREEN_WIDTH,SCREEN_HEIGHT))
 
     second_bg = pygame.image.load("assets/bgg.jpeg").convert_alpha()
-    second_bg = pygame.transform.scale(bg,(1000,600))
+    second_bg = pygame.transform.scale(bg,(SCREEN_WIDTH,SCREEN_HEIGHT))
     while True:
 
         for event in pygame.event.get():
@@ -147,8 +150,8 @@ def gameover():
         second_bgx +=0.1
 
         if bgx > -1:
-            bgx = -1000
-        if second_bgx > 1000:
+            bgx = -SCREEN_WIDTH
+        if second_bgx > SCREEN_WIDTH:
             second_bgx = 0
         screen.blit(bg,(bgx,0))
         screen.blit(second_bg,(second_bgx,0))
@@ -159,104 +162,115 @@ def gameover():
 
 def game():
     pygame.init()
-    screen = pygame.display.set_mode((1000,600))
+    screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
     
-    #setting frame rate cap tp run stabily
+    # setting frame rate cap tp run stabily
     clock = pygame.time.Clock()
     
-    #setting screen title
+    # setting screen title
     pygame.display.set_caption("Space Impact Remake")
 
-    #BACKGROUND
-    bgx = -1000
+    # BACKGROUND
+    bgx = -SCREEN_WIDTH
 
     second_bgx = 0
     bg = pygame.image.load("assets/bgg.jpeg").convert_alpha()
-    bg = pygame.transform.scale(bg,(1000,600))
+    bg = pygame.transform.scale(bg,(SCREEN_WIDTH,SCREEN_HEIGHT))
     second_bg = pygame.image.load("assets/bgg.jpeg").convert_alpha()
-    second_bg = pygame.transform.scale(bg,(1000,600))
+    second_bg = pygame.transform.scale(bg,(SCREEN_WIDTH,SCREEN_HEIGHT))
 
-    #sprites
-    all_sprite = pygame.sprite.Group()
+    # sprites
+    all_sprite_group = pygame.sprite.Group()
     bullet_group = pygame.sprite.Group()
-    enemy_sprite = pygame.sprite.Group()
+    enemy_sprite_group = pygame.sprite.Group()
 
     player = s.Player()
-    enemy = s.Enemy()
+    
    
-    enemy_sprite.add(enemy)
-    all_sprite.add(player)
-    #controls
+    
+    all_sprite_group.add(player)
+    # controls
     cooldown = 0
     shoot = False
-    run = True
+    
     spawn = 100
     total_enemy = 0
-    while run:
+
+    t0 = time.time()
+    timeout_seconds = 30    
+    while player.alive():
         # for every event check that if user click on cross of the screen
-        #then quit the game
+        # then quit the game
+        if time.time()-t0 > timeout_seconds:
+            break
         clock.tick(60)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.QUIT()
                 exit()
 
-            #event handler 
-            #KEY DOWN
+            # event handler 
+            # KEY DOWN
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     shoot = True
                     
-            #KEY UP        
+            # KEY UP        
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_SPACE:
                     shoot = False
 
             if shoot:
-                if cooldown ==0:
+                if cooldown == 0:
                     bullet_group.add(s.Bullets(player.rect.centerx+45,player.rect.centery+2))
                     cooldown = 5
                 else:
                     cooldown -= 1
-        #enemy spawn
+        # enemy spawn
         if spawn == 0 and total_enemy <= 10:
-            enemy_sprite.add(s.Enemy())
+            enemy_sprite_group.add(s.Enemy())
             spawn = 100 
             total_enemy += 1
         spawn -= 1                          
         
-        #collsion    
-        if pygame.sprite.spritecollide(enemy,bullet_group,True):
-            enemy.kill()
-            print("shot")   
-        if pygame.sprite.spritecollide(player,enemy_sprite,False):
+        # collsion 
+        
+        
+        for bullet in bullet_group:
+            collided_enemies_list = pygame.sprite.spritecollide(bullet,enemy_sprite_group,True)
+
+            # if bullet hit any enemies in the enemy_sprite_group collided_enemies_list will increase in len
+            if len(collided_enemies_list) > 0 :
+                bullet.kill()
+       
+        
+         
+            
+        if pygame.sprite.spritecollide(player,enemy_sprite_group,False):
             player.reset()  
         
 
-        #background logic
+        # background logic
         bgx += 0.5
         second_bgx +=0.5
 
         if bgx > -1:
-            bgx = -1000
-        if second_bgx > 1000:
-            second_bgx = 0
+            bgx = -SCREEN_WIDTH
+        if second_bgx > SCREEN_WIDTH:
+            second_bgx = 0                    
 
         
         
-        #death conition
-        if player.lives == 0:
-            run = False
-
+        
         screen.blit(bg,(bgx,0))
         screen.blit(second_bg,(second_bgx,0))
         
         bullet_group.draw(screen)
         bullet_group.update()
-        enemy_sprite.draw(screen)
-        enemy_sprite.update()
-        all_sprite.draw(screen)
-        all_sprite.update()
+        enemy_sprite_group.draw(screen)
+        enemy_sprite_group.update()
+        all_sprite_group.draw(screen)
+        all_sprite_group.update()
         # constanly update gameboard 
        
         pygame.display.update()
@@ -265,3 +279,4 @@ def game():
 if __name__=="__main__":
 
     main_menu()
+
