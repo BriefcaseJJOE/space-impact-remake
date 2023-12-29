@@ -1,12 +1,11 @@
-import sys, pygame
-from typing import Any
+import pygame
 import random
 
-collide = 0
+
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.lives = 3
+        self.lives = 1
         self.image = pygame.image.load("assets/player1.png")
         self.resize =  pygame.transform.scale(self.image,(100,50))
         self.rect = self.resize.get_rect()

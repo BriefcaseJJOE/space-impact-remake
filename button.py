@@ -1,9 +1,7 @@
 import pygame
 import sys
 
-pygame.init()
-screen = pygame.display.set_mode((1000,600))
-test_font = pygame.font.Font(None,50)
+
 
 
 class Button():
@@ -14,7 +12,7 @@ class Button():
         self.rect = self.image.get_rect(center=(self.x_pos,self.y_pos))
         
         
-    def update(self):
+    def update(self,screen:pygame.Surface):
         screen.blit(self.image,self.rect)
         
     def checkforinput(self):

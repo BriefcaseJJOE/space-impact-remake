@@ -1,11 +1,26 @@
 import pygame
 import button as b
-import sprite as s
-from config import SCREEN_WIDTH , SCREEN_HEIGHT
+import classes.sprite as s
+from config import SCREEN_WIDTH , SCREEN_HEIGHT , BACKGROUND_IMAGE_FILE_PATH
 import time
+from classes.background import Background
 pygame.init()
 
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
+
+# BACKGROUND|
+background = Background(
+    image_file_path = BACKGROUND_IMAGE_FILE_PATH, 
+    screen_width = SCREEN_WIDTH,
+    screen_height = SCREEN_HEIGHT,
+    screen_initial_x = 0 
+)
+second_background = Background(
+    image_file_path = BACKGROUND_IMAGE_FILE_PATH, 
+    screen_width = SCREEN_WIDTH,
+    screen_height = SCREEN_HEIGHT,
+    screen_initial_x = -SCREEN_WIDTH
+)
 
 
 def main_menu():
@@ -28,16 +43,9 @@ def main_menu():
     pbutton = b.Button(play_button,SCREEN_WIDTH/2 , 400)
     qbutton = b.Button(quit_button,SCREEN_WIDTH/2 , 520)
 
-    # BACKGROUND|
-    bgx = -SCREEN_WIDTH
     
-    second_bgx = 0
-
-    bg = pygame.image.load("assets/bgg.jpeg").convert_alpha()
-    bg = pygame.transform.scale(bg,(SCREEN_WIDTH,SCREEN_HEIGHT))
-
-    second_bg = pygame.image.load("assets/bgg.jpeg").convert_alpha()
-    second_bg = pygame.transform.scale(bg,(SCREEN_WIDTH,SCREEN_HEIGHT))
+    
+    
 
     # MENU LOOP
     while True:
@@ -53,21 +61,14 @@ def main_menu():
             if cbutton.checkforinput():
                 credit()
 
-        bgx += 0.1
-        second_bgx +=0.1
-
-        if bgx > -1:
-            bgx = -SCREEN_WIDTH
-        if second_bgx > SCREEN_WIDTH:
-            second_bgx = 0
-
-        screen.blit(bg,(bgx,0))
-        screen.blit(second_bg,(second_bgx,0))
+        
+        background.update(screen)
+        second_background.update(screen)        
         screen.blit(text_surface,(150,50))
 
-        cbutton.update()
-        qbutton.update()      
-        pbutton.update()
+        cbutton.update(screen)
+        qbutton.update(screen)      
+        pbutton.update(screen)
         pygame.display.update()
 
 def credit():
@@ -82,15 +83,7 @@ def credit():
 
     bbutton = b.Button(back_button,70,50)
 
-    bgx = -SCREEN_WIDTH
-    
-    second_bgx = 0
-
-    bg = pygame.image.load("assets/bgg.jpeg").convert_alpha()
-    bg = pygame.transform.scale(bg,(SCREEN_WIDTH,SCREEN_HEIGHT))
-
-    second_bg = pygame.image.load("assets/bgg.jpeg").convert_alpha()
-    second_bg = pygame.transform.scale(bg,(SCREEN_WIDTH,SCREEN_HEIGHT))
+  
     while True:
 
         for event in pygame.event.get():
@@ -101,18 +94,12 @@ def credit():
                 main_menu()
             
 
-        bgx += 0.1
-        second_bgx +=0.1
-
-        if bgx > -1:
-            bgx = -SCREEN_WIDTH
-        if second_bgx > SCREEN_WIDTH:
-            second_bgx = 0
-        screen.blit(bg,(bgx,0))
-        screen.blit(second_bg,(second_bgx,0))
+        
+        background.update(screen)
+        second_background.update(screen)     
         screen.blit(text_surface,(200,250))
         screen.blit(asset_surface,(190,350))  
-        bbutton.update()
+        bbutton.update(screen)
         
         pygame.display.update()
 
@@ -127,15 +114,7 @@ def gameover():
 
     bbutton = b.Button(back_button,70,50)
 
-    bgx = -SCREEN_WIDTH
     
-    second_bgx = 0
-
-    bg = pygame.image.load("assets/bgg.jpeg").convert_alpha()
-    bg = pygame.transform.scale(bg,(SCREEN_WIDTH,SCREEN_HEIGHT))
-
-    second_bg = pygame.image.load("assets/bgg.jpeg").convert_alpha()
-    second_bg = pygame.transform.scale(bg,(SCREEN_WIDTH,SCREEN_HEIGHT))
     while True:
 
         for event in pygame.event.get():
@@ -145,18 +124,11 @@ def gameover():
             if bbutton.checkforinput():
                 main_menu()
             
-
-        bgx += 0.1
-        second_bgx +=0.1
-
-        if bgx > -1:
-            bgx = -SCREEN_WIDTH
-        if second_bgx > SCREEN_WIDTH:
-            second_bgx = 0
-        screen.blit(bg,(bgx,0))
-        screen.blit(second_bg,(second_bgx,0))
+        
+        background.update(screen)
+        second_background.update(screen)     
         screen.blit(text_surface,(300,250))  
-        bbutton.update()
+        bbutton.update(screen)
         
         pygame.display.update()
 
@@ -170,15 +142,7 @@ def game():
     # setting screen title
     pygame.display.set_caption("Space Impact Remake")
 
-    # BACKGROUND
-    bgx = -SCREEN_WIDTH
-
-    second_bgx = 0
-    bg = pygame.image.load("assets/bgg.jpeg").convert_alpha()
-    bg = pygame.transform.scale(bg,(SCREEN_WIDTH,SCREEN_HEIGHT))
-    second_bg = pygame.image.load("assets/bgg.jpeg").convert_alpha()
-    second_bg = pygame.transform.scale(bg,(SCREEN_WIDTH,SCREEN_HEIGHT))
-
+    
     # sprites
     all_sprite_group = pygame.sprite.Group()
     bullet_group = pygame.sprite.Group()
@@ -251,19 +215,8 @@ def game():
         
 
         # background logic
-        bgx += 0.5
-        second_bgx +=0.5
-
-        if bgx > -1:
-            bgx = -SCREEN_WIDTH
-        if second_bgx > SCREEN_WIDTH:
-            second_bgx = 0                    
-
-        
-        
-        
-        screen.blit(bg,(bgx,0))
-        screen.blit(second_bg,(second_bgx,0))
+        background.update(screen,0.5)
+        second_background.update(screen,0.5)     
         
         bullet_group.draw(screen)
         bullet_group.update()
