@@ -5,7 +5,7 @@ import random
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.lives = 1
+        self.lives = 3
         self.image = pygame.image.load("assets/player1.png")
         self.resize =  pygame.transform.scale(self.image,(100,50))
         self.rect = self.resize.get_rect()
@@ -112,3 +112,16 @@ class Bullets(pygame.sprite.Sprite):
             self.kill()
 
         
+class Power_up(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load("assets/power_up.png").convert_alpha()
+        self.resize = pygame.transform.scale(self.image,(100,100))
+        self.rect = self.image.get_rect()
+        self.rect.centery = random.randint(100,400)
+        self.rect.centerx = 1050
+    
+    def update(self):
+        self.rect.x -= 2
+        if self.rect.x < 0:
+            self.kill()

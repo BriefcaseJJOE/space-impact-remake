@@ -5,6 +5,7 @@ import classes.text as t
 from config import SCREEN_WIDTH , SCREEN_HEIGHT , BACKGROUND_IMAGE_FILE_PATH , BACK_BUTTON_IMAGE_FILE_PATH
 import time
 from classes.background import Background
+from classes.gui import gui
 pygame.init()
 
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
@@ -53,7 +54,9 @@ quit_button = b.Button(
     scale_height = 100,
     scale_width = 200
 )
-
+# GUI
+hp_gui = gui("assets/hp.png")
+rocket_gui = gui('assets/power.png')
 
 def main_menu():
     pygame.display.set_caption("Main Menu")
@@ -144,23 +147,28 @@ def game():
     # setting screen title
     pygame.display.set_caption("Space Impact Remake")
 
-    # all text
-    score = 0
-    score_text = t.text(f"Score: {score}","white", 70)
     
+
+    # all text
+    power_up_text = 0
+    score = 0
+    score_text = t.text(f"Score:{score}","white", 70)
+    rocket_text = t.text(f":{power_up_text}","white", 70)
     
     # sprites
     all_sprite_group = pygame.sprite.Group()
     bullet_group = pygame.sprite.Group()
     enemy_sprite_group = pygame.sprite.Group()
+    power_up_group = pygame.sprite.Group()
 
+   
     player = s.Player()
     all_sprite_group.add(player)
-
+    
     # controls
     cooldown = 0
     shoot = False
-    
+    power_up_timer = 1000
     spawn_timer = 100
     total_enemy = 1
 
@@ -197,11 +205,16 @@ def game():
         # enemy spawn
         if spawn_timer == 0 and total_enemy <= 100:
             enemy_sprite_group.add(s.Enemy(1))
-            spawn_timer = 100 
+            spawn_timer = 100
             total_enemy += 1
+
+        if power_up_timer == 0 :
+            power_up_group.add(s.Power_up())
+            power_up_timer = 1000
             
+
         spawn_timer -= 1                          
-        
+        power_up_timer -= 1
         # collsion 
         
         
@@ -214,9 +227,11 @@ def game():
                 score_text = t.text(f"Score: {score}","white", 70)
                 bullet.kill()
                 
-        
+        if pygame.sprite.spritecollide(player,power_up_group,True):
+            power_up_text += 1
+            rocket_text = t.text(f":{power_up_text}","white", 70)
          
-            
+         
         if pygame.sprite.spritecollide(player,enemy_sprite_group,False):
             player.reset()  
         
@@ -225,14 +240,24 @@ def game():
         background.update(screen,0.5)
         second_background.update(screen,0.5)     
 
-        
+        hp_gui.update(screen,20,20,player.lives)
+        rocket_gui.update(screen,400,20,1)
+
         bullet_group.draw(screen)
         bullet_group.update()
+
         enemy_sprite_group.draw(screen)
         enemy_sprite_group.update()
+
+        power_up_group.draw(screen)
+        power_up_group.update()
+
         all_sprite_group.draw(screen)
         all_sprite_group.update()
-        score_text.update(screen,650,10)
+
+        score_text.update(screen,650,20)
+        rocket_text.update(screen,450,20)
+
         # constanly update gameboard 
        
         pygame.display.update()
