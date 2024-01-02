@@ -57,6 +57,8 @@ quit_button = b.Button(
 # GUI
 hp_gui = gui("assets/hp.png")
 rocket_gui = gui('assets/power.png')
+SCORE = 0
+
 
 def main_menu():
     pygame.display.set_caption("Main Menu")
@@ -119,7 +121,7 @@ def gameover():
     pygame.display.set_caption("Gamer over")
     
     game_over_text = t.text("Game Over", "white")
-
+    
     while True:
 
         for event in pygame.event.get():
@@ -132,7 +134,7 @@ def gameover():
         
         background.update(screen)
         second_background.update(screen)     
-        game_over_text.update(screen,300,250)  
+        game_over_text.update(screen,300,150)  
         back_button.update(screen)
         
         pygame.display.update()
@@ -150,8 +152,9 @@ def game():
     
 
     # all text
-    power_up_text = 2
     score = 0
+    power_up_text = 0
+    
     score_text = t.text(f"Score:{score}","white", 70)
     rocket_text = t.text(f":{power_up_text}","white", 70)
     
@@ -169,17 +172,17 @@ def game():
     cooldown = 0
     shoot = False
     power_shot = False
-    power_up_timer = 100
+    power_up_timer = 2000
     spawn_timer = 100
     total_enemy = 1
 
-    t0 = time.time()
-    timeout_seconds = 30    
+    # t0 = time.time()
+    # timeout_seconds = 30    
     while player.alive():
         # for every event check that if user click on cross of the screen
         # then quit the game
-        if time.time()-t0 > timeout_seconds:
-            break
+        # if time.time()-t0 > timeout_seconds:
+        #     break
         clock.tick(60)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -213,8 +216,8 @@ def game():
 
             if shoot:
                 if cooldown == 0:
-                    bullet_group.add(s.Bullets(player.rect.centerx+45,player.rect.centery+2))
-                    cooldown = 3
+                    bullet_group.add(s.Bullets(player.rect.centerx+50,player.rect.centery+5))
+                    cooldown = 4
                 else:
                     cooldown -= 1
        
@@ -226,7 +229,7 @@ def game():
 
         if power_up_timer == 0 :
             power_up_group.add(s.Power_up())
-            power_up_timer = 100
+            power_up_timer = 2000
             
 
         spawn_timer -= 1                          
@@ -289,6 +292,7 @@ def game():
         # constanly update gameboard 
        
         pygame.display.update()
+
     gameover()
 
 if __name__=="__main__":
