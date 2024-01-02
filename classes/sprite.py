@@ -125,3 +125,35 @@ class Power_up(pygame.sprite.Sprite):
         self.rect.x -= 2
         if self.rect.x < 0:
             self.kill()
+
+class Power_shot(pygame.sprite.Sprite):
+    def __init__(self,x,y):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load("assets/power1.png").convert_alpha()
+        self.resize = pygame.transform.scale(self.image,(50,50))
+        self.rect = self.resize.get_rect()
+        self.rect.center = (x,y)
+        self.spawn_point = self.rect.x
+        self.spawn_point_upper = self.rect.y
+        self.spawn_point_lower = self.rect.y + 100
+        self.spawn_point_upper_1 = self.rect.y +200 
+    
+
+    def update(self):
+        self.rect.centerx += 2
+        if self.rect.x > 1050:
+            self.kill()
+        
+        
+        if self.spawn_point_upper < self.spawn_point_lower:
+            self.rect.y +=1
+
+            self.spawn_point_upper +=1
+        #spawn_point_upper = 400 spawn_point_lower = 400
+        if self.spawn_point_upper == self.spawn_point_lower and self.spawn_point < self.spawn_point_upper_1:
+            self.rect.y -=1
+            self.spawn_point_upper_1 -=2
+
+        if self.spawn_point_upper == self.spawn_point_lower and self.spawn_point == self.spawn_point_upper_1:
+            self.spawn_point_upper = self.spawn_point
+            self.spawn_point_upper_1 = self.rect.centery +200 

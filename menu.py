@@ -150,7 +150,7 @@ def game():
     
 
     # all text
-    power_up_text = 0
+    power_up_text = 2
     score = 0
     score_text = t.text(f"Score:{score}","white", 70)
     rocket_text = t.text(f":{power_up_text}","white", 70)
@@ -160,7 +160,7 @@ def game():
     bullet_group = pygame.sprite.Group()
     enemy_sprite_group = pygame.sprite.Group()
     power_up_group = pygame.sprite.Group()
-
+    power_shot_group = pygame.sprite.Group()
    
     player = s.Player()
     all_sprite_group.add(player)
@@ -168,7 +168,8 @@ def game():
     # controls
     cooldown = 0
     shoot = False
-    power_up_timer = 1000
+    power_shot = False
+    power_up_timer = 100
     spawn_timer = 100
     total_enemy = 1
 
@@ -185,16 +186,30 @@ def game():
                 pygame.QUIT()
                 exit()
 
-            # event handler 
+        # event handler 
             # KEY DOWN
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     shoot = True
-                    
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_x:
+                    power_shot = True
+
             # KEY UP        
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_SPACE:
                     shoot = False
+
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_x:
+                    power_shot = False
+
+            if power_shot:
+                if power_up_text > 0:
+                    power_shot_group.add(s.Power_shot(player.rect.centerx+45,player.rect.centery+2))
+                    power_up_text -= 1
+                    rocket_text = t.text(f":{power_up_text}","white", 70)
 
             if shoot:
                 if cooldown == 0:
@@ -202,7 +217,8 @@ def game():
                     cooldown = 3
                 else:
                     cooldown -= 1
-        # enemy spawn
+       
+        # spawn timer
         if spawn_timer == 0 and total_enemy <= 100:
             enemy_sprite_group.add(s.Enemy(1))
             spawn_timer = 100
@@ -210,14 +226,14 @@ def game():
 
         if power_up_timer == 0 :
             power_up_group.add(s.Power_up())
-            power_up_timer = 1000
+            power_up_timer = 100
             
 
         spawn_timer -= 1                          
         power_up_timer -= 1
+       
+        
         # collsion 
-        
-        
         for bullet in bullet_group:
             collided_enemies_list = pygame.sprite.spritecollide(bullet,enemy_sprite_group,True)
 
@@ -226,7 +242,16 @@ def game():
                 score += 10
                 score_text = t.text(f"Score: {score}","white", 70)
                 bullet.kill()
-                
+
+        for rocket in power_shot_group:
+            rocket_collided_enemies_list = pygame.sprite.spritecollide(rocket,enemy_sprite_group,True)
+
+            # if bullet hit any enemies in the enemy_sprite_group collided_enemies_list will increase in len
+            if len(rocket_collided_enemies_list) > 0 :
+                score += 10
+                score_text = t.text(f"Score: {score}","white", 70)
+                rocket.kill()
+
         if pygame.sprite.spritecollide(player,power_up_group,True):
             power_up_text += 1
             rocket_text = t.text(f":{power_up_text}","white", 70)
@@ -236,7 +261,7 @@ def game():
             player.reset()  
         
 
-        # background logic
+        # drawing and updating screen
         background.update(screen,0.5)
         second_background.update(screen,0.5)     
 
@@ -251,6 +276,9 @@ def game():
 
         power_up_group.draw(screen)
         power_up_group.update()
+
+        power_shot_group.draw(screen)
+        power_shot_group.update()
 
         all_sprite_group.draw(screen)
         all_sprite_group.update()
