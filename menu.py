@@ -57,8 +57,6 @@ quit_button = b.Button(
 # GUI
 hp_gui = gui("assets/hp.png")
 rocket_gui = gui('assets/power.png')
-SCORE = 0
-
 
 def main_menu():
     pygame.display.set_caption("Main Menu")
@@ -164,15 +162,18 @@ def game():
     enemy_sprite_group = pygame.sprite.Group()
     power_up_group = pygame.sprite.Group()
     power_shot_group = pygame.sprite.Group()
-   
+    boss_group = pygame.sprite.Group()
+    
+
     player = s.Player()
+    
     all_sprite_group.add(player)
     
     # controls
     cooldown = 0
     shoot = False
     power_shot = False
-    power_up_timer = 2000
+    power_up_timer = 1000
     spawn_timer = 100
     total_enemy = 1
 
@@ -209,10 +210,11 @@ def game():
                     power_shot = False
 
             if power_shot:
-                if power_up_text > 0:
+                if power_up_text > 0 and cooldown <= 0:
                     power_shot_group.add(s.Power_shot(player.rect.centerx+45,player.rect.centery+2))
                     power_up_text -= 1
                     rocket_text = t.text(f":{power_up_text}","white", 70)
+            
 
             if shoot:
                 if cooldown == 0:
@@ -222,38 +224,58 @@ def game():
                     cooldown -= 1
        
         # spawn timer
-        if spawn_timer == 0 and total_enemy <= 100:
+        if spawn_timer == 0 and total_enemy <= 10:
             enemy_sprite_group.add(s.Enemy(1))
             spawn_timer = 100
             total_enemy += 1
 
         if power_up_timer == 0 :
             power_up_group.add(s.Power_up())
-            power_up_timer = 2000
-            
+            power_up_timer = 10
+
+        if total_enemy == 10:
+            first_boss = s.Boss()
+            boss_group.add(s.Boss())
+            total_enemy +=1  
+         
 
         spawn_timer -= 1                          
         power_up_timer -= 1
        
         
         # collsion 
+
+        # bullet collsion
         for bullet in bullet_group:
             collided_enemies_list = pygame.sprite.spritecollide(bullet,enemy_sprite_group,True)
-
+            boss_collide_list = pygame.sprite.spritecollide(bullet,boss_group,False)
             # if bullet hit any enemies in the enemy_sprite_group collided_enemies_list will increase in len
             if len(collided_enemies_list) > 0 :
                 score += 10
                 score_text = t.text(f"Score: {score}","white", 70)
                 bullet.kill()
-
+            if len(boss_collide_list) > 0:
+                first_boss.hp -= 1
+                score += 20
+                score_text = t.text(f"Score: {score}","white", 70)
+                bullet.kill()
+                    
+        # rocket collions
         for rocket in power_shot_group:
             rocket_collided_enemies_list = pygame.sprite.spritecollide(rocket,enemy_sprite_group,True)
-
+            rocket_boss_collide_list = pygame.sprite.spritecollide(rocket,boss_group,False)
             # if bullet hit any enemies in the enemy_sprite_group collided_enemies_list will increase in len
             if len(rocket_collided_enemies_list) > 0 :
                 score += 10
                 score_text = t.text(f"Score: {score}","white", 70)
                 rocket.kill()
+            if len(rocket_boss_collide_list) > 0 :
+                first_boss.hp -= 10
+                score += 50
+                score_text = t.text(f"Score: {score}","white", 70)
+                rocket.kill()
+
+
 
         if pygame.sprite.spritecollide(player,power_up_group,True):
             power_up_text += 1
@@ -286,11 +308,14 @@ def game():
         all_sprite_group.draw(screen)
         all_sprite_group.update()
 
+        boss_group.draw(screen)
+        boss_group.update()
+
         score_text.update(screen,650,20)
         rocket_text.update(screen,450,20)
 
         # constanly update gameboard 
-       
+        
         pygame.display.update()
 
     gameover()

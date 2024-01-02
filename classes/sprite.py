@@ -157,3 +157,24 @@ class Power_shot(pygame.sprite.Sprite):
         if self.spawn_point_upper == self.spawn_point_lower and self.spawn_point == self.spawn_point_upper_1:
             self.spawn_point_upper = self.spawn_point
             self.spawn_point_upper_1 = self.rect.centery +200 
+
+class Boss(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.hp = 10
+        self.image = pygame.image.load("assets/boss.png")
+        self.resize =  pygame.transform.scale(self.image,(300,400))
+        self.rect = self.resize.get_rect()
+        self.rect.centerx = 1300
+        self.rect.centery = 360
+     
+    
+
+    def update(self):
+        if self.hp == 0:
+            self.kill()
+        if self.rect.x > 700:
+            self.rect.x -= 3
+
+        # death condition
+        
