@@ -191,14 +191,15 @@ def game():
             if shoot:
                 if cooldown == 0:
                     bullet_group.add(s.Bullets(player.rect.centerx+45,player.rect.centery+2))
-                    cooldown = 5
+                    cooldown = 3
                 else:
                     cooldown -= 1
         # enemy spawn
         if spawn == 0 and total_enemy <= 10:
-            enemy_sprite_group.add(s.Enemy())
+            enemy_sprite_group.add(s.Enemy(1))
             spawn = 100 
             total_enemy += 1
+            
         spawn -= 1                          
         
         # collsion 
@@ -221,6 +222,7 @@ def game():
         # background logic
         background.update(screen,0.5)
         second_background.update(screen,0.5)     
+
         
         bullet_group.draw(screen)
         bullet_group.update()
