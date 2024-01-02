@@ -1,6 +1,7 @@
 import pygame
 import classes.button as b
 import classes.sprite as s
+import classes.text as t
 from config import SCREEN_WIDTH , SCREEN_HEIGHT , BACKGROUND_IMAGE_FILE_PATH , BACK_BUTTON_IMAGE_FILE_PATH
 import time
 from classes.background import Background
@@ -146,6 +147,10 @@ def game():
     # setting screen title
     pygame.display.set_caption("Space Impact Remake")
 
+    # all text
+    score = 0
+    score_text = t.text(f"Score: {score}","white", 70)
+    
     
     # sprites
     all_sprite_group = pygame.sprite.Group()
@@ -153,16 +158,14 @@ def game():
     enemy_sprite_group = pygame.sprite.Group()
 
     player = s.Player()
-    
-   
-    
     all_sprite_group.add(player)
+
     # controls
     cooldown = 0
     shoot = False
     
-    spawn = 100
-    total_enemy = 0
+    spawn_timer = 100
+    total_enemy = 1
 
     t0 = time.time()
     timeout_seconds = 30    
@@ -195,12 +198,12 @@ def game():
                 else:
                     cooldown -= 1
         # enemy spawn
-        if spawn == 0 and total_enemy <= 10:
+        if spawn_timer == 0 and total_enemy <= 100:
             enemy_sprite_group.add(s.Enemy(1))
-            spawn = 100 
+            spawn_timer = 100 
             total_enemy += 1
             
-        spawn -= 1                          
+        spawn_timer -= 1                          
         
         # collsion 
         
@@ -210,8 +213,10 @@ def game():
 
             # if bullet hit any enemies in the enemy_sprite_group collided_enemies_list will increase in len
             if len(collided_enemies_list) > 0 :
+                score += 10
+                score_text = t.text(f"Score: {score}","white", 70)
                 bullet.kill()
-       
+                
         
          
             
@@ -230,6 +235,7 @@ def game():
         enemy_sprite_group.update()
         all_sprite_group.draw(screen)
         all_sprite_group.update()
+        score_text.update(screen,650,10)
         # constanly update gameboard 
        
         pygame.display.update()

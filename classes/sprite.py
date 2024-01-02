@@ -1,6 +1,6 @@
 import pygame
 import random
-import time
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -58,7 +58,7 @@ class Enemy(pygame.sprite.Sprite):
         self.image = pygame.image.load("assets/enemy.png")
         #self.resize =  pygame.transform.scale(self.image,(1,1))
         self.rect = self.image.get_rect()
-        self.rect.centerx = 1100
+        self.rect.centerx = 1050
         self.rect.centery = random.randint(100,500)
         self.spawn_point = self.rect.centery 
         self.spawn_point_upper = self.rect.centery
@@ -87,7 +87,8 @@ class Enemy(pygame.sprite.Sprite):
        
         if self.rect.x < 0:
             self.kill()
-        
+        if self.live == 0:
+            self.kill()
 
         
 
